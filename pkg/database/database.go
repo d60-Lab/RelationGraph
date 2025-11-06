@@ -47,7 +47,7 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 	sqlDB.SetConnMaxLifetime(time.Duration(cfg.Database.ConnMaxLifetime) * time.Second)
 
     // 自动迁移
-    if err := db.AutoMigrate(&model.User{}, &model.Follow{}, &model.Fan{}); err != nil {
+    if err := db.AutoMigrate(&model.User{}, &model.Follow{}, &model.Fan{}, &model.Post{}, &model.Outbox{}, &model.Inbox{}); err != nil {
 		return nil, err
 	}
 
