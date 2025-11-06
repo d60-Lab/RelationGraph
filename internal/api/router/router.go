@@ -60,5 +60,14 @@ func Setup(r *gin.Engine, h *handler.Handler, cfg *config.Config) {
 			users.PUT("/:id", middleware.Auth(cfg), h.UpdateUser)
 			users.DELETE("/:id", middleware.Auth(cfg), middleware.AdminOnly(), h.DeleteUser)
 		}
+
+		// 关系链模块
+		relations := v1.Group("/relations")
+		{
+			relations.POST("/follow", h.Follow)
+			relations.POST("/unfollow", h.Unfollow)
+			relations.GET("/:user_id/following", h.ListFollowing)
+			relations.GET("/:user_id/fans", h.ListFans)
+		}
 	}
 }

@@ -107,12 +107,19 @@ func main() {
 
 	// 初始化仓储层
 	userRepo := repository.NewUserRepository(db)
+	followRepo := repository.NewFollowRepository(db)
+	fanRepo := repository.NewFanRepository(db)
+
+	// 初始化异步冗余执行器
+	replicator := service.NewFanReplicator(fanRepo, 10000)
+	stopReplicator := replicator.Start(4)
 
 	// 初始化服务层
 	userService := service.NewUserService(userRepo, cfg)
+	relService := service.NewRelationshipService(followRepo, fanRepo, replicator)
 
 	// 初始化处理器
-	h := handler.NewHandler(userService)
+	h := handler.NewHandler(userService, relService)
 
 	// 设置 Gin 模式
 	gin.SetMode(cfg.Server.Mode)
@@ -153,6 +160,9 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		logger.Fatal("Server forced to shutdown", zap.Error(err))
 	}
+
+	// 停止异步冗余
+	_ = stopReplicator(ctx)
 
 	logger.Info("Server exited")
 }

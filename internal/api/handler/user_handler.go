@@ -13,12 +13,14 @@ import (
 // Handler 处理器结构
 type Handler struct {
 	userService service.UserService
+    relService  service.RelationshipService
 }
 
 // NewHandler 创建处理器实例
-func NewHandler(userService service.UserService) *Handler {
+func NewHandler(userService service.UserService, relService service.RelationshipService) *Handler {
 	return &Handler{
-		userService: userService,
+        userService: userService,
+        relService:  relService,
 	}
 }
 

@@ -96,7 +96,7 @@ func TestGetUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(MockUserService)
-	handler := NewHandler(mockService)
+    handler := NewHandler(mockService, nil)
 
 	expectedUser := &dto.UserResponse{
 		ID:       "1",
@@ -126,7 +126,7 @@ func TestCreateUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(MockUserService)
-	handler := NewHandler(mockService)
+    handler := NewHandler(mockService, nil)
 
 	createReq := &dto.CreateUserRequest{
 		Username: "testuser",
@@ -167,7 +167,7 @@ func TestGetUserNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockService := new(MockUserService)
-	handler := NewHandler(mockService)
+    handler := NewHandler(mockService, nil)
 
 	mockService.On("GetByID", mock.Anything, "999").Return(nil, service.ErrUserNotFound)
 
