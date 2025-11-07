@@ -20,7 +20,7 @@ services:
     networks:
       - app-network
 
-  # PostgreSQL 数据库
+  # PostgreSQL 主数据库 (用于单库测试)
   postgres:
     image: postgres:18-alpine
     environment:
@@ -33,6 +33,161 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
+    command: >
+      postgres 
+      -c max_connections=500
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+
+  # 分库分表 - 数据库分片 0
+  shard_db_0:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_0
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5440:5432"
+    volumes:
+      - shard-0-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 1
+  shard_db_1:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5441:5432"
+    volumes:
+      - shard-1-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 2
+  shard_db_2:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_2
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5442:5432"
+    volumes:
+      - shard-2-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 3
+  shard_db_3:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_3
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5443:5432"
+    volumes:
+      - shard-3-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 4
+  shard_db_4:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_4
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5444:5432"
+    volumes:
+      - shard-4-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 5
+  shard_db_5:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_5
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5445:5432"
+    volumes:
+      - shard-5-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 6
+  shard_db_6:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_6
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5446:5432"
+    volumes:
+      - shard-6-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
+
+  # 分库分表 - 数据库分片 7
+  shard_db_7:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=orders_shard_7
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5447:5432"
+    volumes:
+      - shard-7-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres 
+      -c max_connections=300
+      -c shared_buffers=128MB
 
   # Redis 缓存
   redis:
@@ -46,6 +201,14 @@ services:
 
 volumes:
   postgres-data:
+  shard-0-data:
+  shard-1-data:
+  shard-2-data:
+  shard-3-data:
+  shard-4-data:
+  shard-5-data:
+  shard-6-data:
+  shard-7-data:
   redis-data:
 
 networks:

@@ -63,3 +63,22 @@ init-db: ## 初始化数据库
 ci: lint test build ## 运行 CI 流程（lint + test + build）
 
 verify: fmt lint test ## 提交前验证（格式化 + lint + 测试）
+
+# 分库分表压测相关命令
+.PHONY: bench-sharding bench-sharding-setup bench-sharding-clean
+
+bench-sharding-setup: ## 启动分库分表压测所需的数据库
+	@echo "启动数据库实例..."
+	docker-compose up -d postgres shard_db_0 shard_db_1 shard_db_2 shard_db_3 shard_db_4 shard_db_5 shard_db_6 shard_db_7
+	@echo "等待数据库启动完成..."
+	@sleep 10
+	@echo "数据库启动完成！"
+
+bench-sharding: bench-sharding-setup ## 运行分库分表性能压测
+	@echo "开始运行分库分表性能压测..."
+	go run cmd/shardbench/main.go
+
+bench-sharding-clean: ## 清理分库分表压测环境
+	@echo "停止并删除数据库容器..."
+	docker-compose down -v
+	@echo "清理完成！"

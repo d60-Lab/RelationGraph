@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  mode: debug
+  read_timeout: 10
+  write_timeout: 10
+
+database:
+  driver: postgres
+  host: localhost
+  port: 5433
+  database: gin_template
+  username: postgres
+  password: postgres
+  max_open_conns: 50
+  max_idle_conns: 10
+  conn_max_lifetime: 300
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: dev_secret
+  expire: 3600
+
+pprof:
+  enabled: true
+
+sentry:
+  enabled: false
+  dsn: ""
+  environment: dev
+  traces_sample_rate: 0.0
+  debug: false
+
+tracing:
+  enabled: false
+  service_name: relationgraph
+  jaeger_endpoint: ""
